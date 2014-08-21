@@ -1,0 +1,26 @@
+puts "Input your email:"
+input = gets.chomp
+
+user = User.where(email: input)
+
+puts "What do you want to do?"
+puts "0. Create shortened URL"
+puts "1. Visit shortened URL"
+answer = gets.chomp.to_i
+if answer == 0
+  puts "Type in your long URL"
+  long_url = gets.chomp
+  short_url = ShortenedUrl.create_for_user_and_long_url!(user, long_url)
+  puts "Short url is: #{short_url}"
+elsif answer == 1
+  puts "Type in the shortened URL"
+  short_url = gets.chomp
+  long_url = ShortenedUrl.select(:long_url).where(short_url: short_url)
+  
+  #not quite working yet, ERROR involving user
+  puts launchy long_url
+  Visit.record_visit!(user, short_url)
+  
+else
+  "invalid input"
+end
